@@ -1,0 +1,21 @@
+# Секреты
+config.py
+
+# Виртуальное окружение
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Рабочие файлы и данные
+data/
+*.pdf
+*.png
+*.jpg
+*.jpeg
+report.qmd
+presentation.qmd
+
+# Системные файлы
+.DS_Store
+Thumbs.db

@@ -1,0 +1,117 @@
+---
+author:
+  name: {{ author_name }}
+title: "Отчёт по лабораторной работе №{{ lab_num }}"
+subtitle: "{{ lab_title }}"
+license: CC BY
+date: today
+date-format: "YYYY-MM-DD"
+---
+
+# Информация
+
+## Докладчик
+
+:::::::::::::: {.columns align=center}
+::: {.column width="70%"}
+
+  * {{ author_name }}
+  * {{ author_group }}
+  * Российский университет дружбы народов им. П. Лумумбы
+  * [{{ author_email }}](mailto:{{ author_email }})
+
+:::
+::: {.column width="30%"}
+
+![](./image/me.png)
+
+:::
+::::::::::::::
+
+::: notes
+- Поприветствовать аудиторию.
+- Представиться кратко.
+:::
+
+# Вводная часть
+
+## Актуальность
+
+{{ aktualnost }}
+
+::: notes
+- Обосновать важность темы.
+:::
+
+## Объект и предмет исследования
+
+{{ object_subject }}
+
+::: notes
+- Четко разделить объект и предмет.
+:::
+
+## Цель работы
+
+{{ goal }}
+
+::: notes
+- Озвучить цель из методички.
+:::
+
+## Задачи
+
+{% for task in tasks %}
+- {{ task }}
+{% endfor %}
+
+::: notes
+- Перечислить задачи.
+:::
+
+# Выполнение работы
+
+{% for step in steps %}
+## Шаг {{ loop.index }}
+
+{{ step.short_text }}
+
+![{{ step.caption }}](image/{{ step.image }})
+
+::: notes
+{{ step.text }}
+:::
+
+{% endfor %}
+
+# Контрольные вопросы
+
+{% for qa in questions %}
+## Вопрос {{ loop.index }}
+
+**{{ qa.question }}**
+
+{{ qa.answer }}
+
+{% endfor %}
+
+# Результаты
+
+## Полученные результаты
+
+{{ results }}
+
+::: notes
+- Перечислить, что удалось сделать.
+:::
+
+# Заключение
+
+## Главный вывод
+
+{{ conclusion }}
+
+::: notes
+- Финальный аккорд.
+- Поблагодарить за внимание.
+:::

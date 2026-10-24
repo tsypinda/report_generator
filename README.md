@@ -45,9 +45,10 @@
    PROXY_URL = "socks5://ЛОГИН:ПАРОЛЬ@127.0.0.1:10808"
    
    # Ваши личные данные для титульного листа
-   AUTHOR_NAME = "Иванов Иван Иванович"
+   AUTHOR_NAME = "Иванова Мария Ивановна"
+   AUTHOR_GENDER = "женский"
    AUTHOR_GROUP = "студент группы НAAбд-03-23"
-   AUTHOR_EMAIL = "ivanov@inbox.ru"
+   AUTHOR_EMAIL = "ivanova@inbox.ru"
    ```
 
 ## 📂 Подготовка данных

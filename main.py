@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 from pypdf import PdfReader
 import httpx
 from httpx_socks import SyncProxyTransport
-from config import API_KEY, BASE_URL, MODEL_NAME, PROXY_URL, AUTHOR_NAME, AUTHOR_GROUP, AUTHOR_EMAIL
+from config import API_KEY, BASE_URL, MODEL_NAME, PROXY_URL, AUTHOR_NAME, AUTHOR_GROUP, AUTHOR_EMAIL, AUTHOR_GENDER
 
 # Создаем транспорт, который точно умеет SOCKS5 с паролем
 transport = SyncProxyTransport.from_url(PROXY_URL)
@@ -154,7 +154,7 @@ def analyze_images(folder_path):
 # ==========================================
 # 3. ГЕНЕРАЦИЯ ТЕКСТА ОТЧЕТА
 # ==========================================
-def generate_report_data(steps, task_path):
+def generate_report_data(steps, task_path,gender):
     print("Генерация текста отчета...")
     steps_text = "\n".join([f"Шаг {s['id']}: {s['text']}" for s in steps])
     
@@ -168,7 +168,7 @@ def generate_report_data(steps, task_path):
     task_text = task_text[:25000] 
 
     prompt = f"""
-    Ты — студент, пишущий отчет по лабораторной работе. 
+    Ты — студент. Твой пол: {gender}. Пиши текст отчета от первого лица (Я сделал/сделала, Я проверил/проверила)., пишущий отчет по лабораторной работе. 
     Вот полный текст методички с заданием, теорией и контрольными вопросами:
     ---
     {task_text}
@@ -217,17 +217,6 @@ def generate_report_data(steps, task_path):
         # 1. Ссылка на лабу (меняй руками при необходимости)
         data["lab_url"] = "https://esystem.rudn.ru/pluginfile.php/3318698/mod_resource/content/4/009-scheduling.pdf" 
         
-        # 2. Список литературы (берем из методички). 
-        # Если хочешь, чтобы нейросеть его сгенерировала из PDF - убери пустые кавычки 
-        # и попроси в промпте вытащить список литературы в поле "literature_list"
-        data["literature_list"] = (
-            "2. UNIX Power Tools / M. Loukides, T. O'Reilly, J. Peek, S. Powers. — O'Reilly Media, 2009.\n"
-            "3. Робачевский А., Немногин С., Стесик О. Операционная система UNIX. — 2-е изд. — БХВ-Петербург, 2010.\n"
-            "4. Колисниченко Д. Н. Самоучитель системного администратора Linux. — СПб. : БХВ-Петербург, 2011. — (Системный администратор).\n"
-            "5. Таненбаум Э., Бос Х. Современные операционные системы. — 4-е изд. — СПб. : Питер, 2015. — (Классика Computer Science).\n"
-            "6. Unix и Linux: руководство системного администратора / Э. Немет, Г. Снайдер, Т. Хейн, Б. Уэйли, Д. Макни. — 5-е изд. — СПб. : ООО «Диалектика», 2020."
-        )
-        
         return data
     except Exception as e:
         print(f"Ошибка при генерации текста отчета: {e}")
@@ -235,10 +224,11 @@ def generate_report_data(steps, task_path):
 #
 #   PRESEnTATION
 #
-def generate_presentation(report_data, steps):
+def generate_presentation(report_data, steps, gender):
     print("Генерация презентации...")
     
     prompt = f"""
+    Ты — студент. Твой пол: {gender}.
     На основе этого отчета сделай структуру для презентации.
     Верни ответ СТРОГО в формате JSON. В ключе "steps_short" верни список объектов, каждый с ключом "short_text".
     {{
@@ -356,7 +346,7 @@ if __name__ == "__main__":
 
     parsed_steps = analyze_images(IMAGES_FOLDER)
     if parsed_steps:
-        full_report_data = generate_report_data(parsed_steps, TXT_FILE)
+        full_report_data = generate_report_data(parsed_steps, TXT_FILE, AUTHOR_GENDER)
         # Сохраняем отчет тоже в data
         build_qmd(full_report_data, parsed_steps, output_path=os.path.join(DATA_DIR, "report.qmd"))
-        generate_presentation(full_report_data, parsed_steps)
+        generate_presentation(full_report_data, parsed_steps, AUTHOR_GENDER)

@@ -105,4 +105,3 @@ graph TD
 :::
 
 1. Лабораторная работа №{{ lab_num }} [Электронный ресурс] URL: {{ lab_url }}
-{{ literature_list }}

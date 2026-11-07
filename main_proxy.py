@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 from pypdf import PdfReader
 import httpx
 from httpx_socks import SyncProxyTransport
-from config import API_KEY, BASE_URL, MODEL_NAME, PROXY_URL, AUTHOR_NAME, AUTHOR_GROUP, AUTHOR_EMAIL, AUTHOR_GENDER
+from config import API_KEY_PROXY, BASE_URL_PROXY, MODEL_NAME_PROXY, PROXY_URL, AUTHOR_NAME, AUTHOR_GROUP, AUTHOR_EMAIL, AUTHOR_GENDER
 
 # Создаем транспорт, который точно умеет SOCKS5 с паролем
 transport = SyncProxyTransport.from_url(PROXY_URL)
@@ -16,7 +16,7 @@ transport = SyncProxyTransport.from_url(PROXY_URL)
 http_client = httpx.Client(transport=transport)
 
 # Передаем клиент в OpenAI
-client = OpenAI(api_key=API_KEY, base_url=BASE_URL, http_client=http_client)
+client = OpenAI(api_key=API_KEY_PROXY, base_url=BASE_URL_PROXY, http_client=http_client)
 
 # ==========================================
 # 1. КОНВЕРТАЦИЯ PDF В ТЕКСТ
@@ -110,7 +110,7 @@ def process_single_image(img_info):
         
         response = make_request_with_retry(
             client=client,
-            model=MODEL_NAME,
+            model=MODEL_NAME_PROXY,
             messages=[
                 {"role": "user", "content": [
                     {"type": "text", "text": prompt},
@@ -165,7 +165,7 @@ def generate_report_data(steps, task_path,gender):
         print("Ошибка: файл task.txt не найден!")
         return None
 
-    task_text = task_text[:25000] 
+    # task_text = task_text[:25000] 
 
     prompt = f"""
     Ты — студент. Твой пол: {gender}. Пиши текст отчета от первого лица (Я сделал/сделала, Я проверил/проверила)., пишущий отчет по лабораторной работе. 
@@ -207,7 +207,7 @@ def generate_report_data(steps, task_path,gender):
     try:
         response = make_request_with_retry(
             client=client,
-            model=MODEL_NAME,
+            model=MODEL_NAME_PROXY,
             messages=[{"role": "user", "content": prompt}]
         )
         data = json.loads(response.choices[0].message.content)
@@ -242,7 +242,7 @@ def generate_presentation(report_data, steps, gender):
     
     response = make_request_with_retry(
         client=client,
-        model=MODEL_NAME,
+        model=MODEL_NAME_PROXY,
         messages=[{"role": "user", "content": prompt}]
     )
     pres_data = json.loads(response.choices[0].message.content)

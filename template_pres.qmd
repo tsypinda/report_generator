@@ -69,14 +69,56 @@ date-format: "YYYY-MM-DD"
 - Перечислить задачи.
 :::
 
+## Объект и предмет исследования
+
+{{ object_subject }}
+
+## Методы исследования
+
+{{ methods }}
+
+## Схема выполнения работы
+
+На рис. -@fig-flowchart представлена общая последовательность действий при выполнении работы.
+
+::: {{ '{#fig-flowchart}' }}
+
+{% raw %}
+```{mermaid}
+%%| fig-width: 100%
+graph TD
+    A@{ shape: circle, label: "Начало" } --> B[Изучить теоретический материал]
+    B --> C[Приступить к практической части]
+    C --> D[Каждый шаг зафиксировать скриншотом]
+    D --> E[Занести в отчёт]
+    E --> F[Поместить в git-репозиторий на sourcecraft и gitverce]
+    F --> G[Сделать релизы git]
+    G --> J@{ shape: dbl-circ, label: "Конец" }
+```
+{% endraw %}
+
+Блок-схема выполнения лабораторной работы
+
+:::
+
+# Теоретическая часть
+
+## 
+
+{{ theory }}
+
+# Материалы и методы
+
+{{ materials_and_methods }}
+
 # Выполнение работы
 
 {% for step in steps %}
 ## Шаг {{ loop.index }}
 
-{{ step.short_text }}
+{{ step.text }}
 
-![{{ step.caption }}](image/{{ step.image }})
+![{{ step.caption }}](image/{{ step.image }}){{ '{#fig-' + step.id + ' width=50%}' }}
 
 ::: notes
 {{ step.text }}

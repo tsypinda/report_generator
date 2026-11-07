@@ -31,20 +31,19 @@
    ```
 
 3. **Настройте конфигурацию**:
-   Создайте в корне проекта файл `config.py` и заполните его:
+   Переименуйте файл `config_example.py` в `config.py` или создайте новый файл и заполните его:
    ```python
-   # config.py
-   
-   # Настройки API (пример для Google AI Studio)
-   API_KEY = "ВАШ_API_КЛЮЧ_ЗДЕСЬ"
-   BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
-   MODEL_NAME = "gemini-3.5-flash-lite" # или другая доступная модель
-   
-   # Настройки прокси (если вы в России и используете VPN с локальным прокси)
-   # Если прокси не нужен, закомментируйте эти строки и в main.py используйте обычный OpenAI()
-   PROXY_URL = "socks5://ЛОГИН:ПАРОЛЬ@127.0.0.1:10808"
-   
-   # Ваши личные данные для титульного листа
+   API_KEY_PROXY = "API Key для Google Gemini - если используете VPN или Proxy (бесплатный способ)" # Google API
+   API_KEY = "API ключ ProxyAPI или другого агрегатора, если хотите платно / нет VPNa" # ProxyAPI
+   # Цена генерации составляет ~5-10 рублей на отчет + презентация, если есть рабочий впн - бесплатно
+   BASE_URL_PROXY = "https://generativelanguage.googleapis.com/v1beta/openai/"
+   BASE_URL = "https://api.proxyapi.ru/v1"
+   MODEL_NAME_PROXY = "gemini-3.5-flash-lite" # настройка моделей
+   MODEL_NAME = "google/gemini-3.5-flash-lite"
+
+   PROXY_URL = "socks5://ЛОГИН:ПАРОЛЬ@127.0.0.1:10808" # Для INCY Oroxy
+
+   # Личные данные
    AUTHOR_NAME = "Иванова Мария Ивановна"
    AUTHOR_GENDER = "женский"
    AUTHOR_GROUP = "студент группы НAAбд-03-23"
@@ -69,15 +68,23 @@ report_generator/
 ├── template_pres.qmd
 ├── template_report.qmd
 ├── config.py
-└── main.py
+├── main_proxy.py
+└── main_rus.py
+
+
 ```
 
 ## 🏃‍♂️ Запуск
 
 Убедитесь, что виртуальное окружение активировано, и запустите:
 ```bash
-python main.py
+python main_rus.py
 ```
+для попытки генерации через агригатора или 
+```bash
+python main_proxy.py
+```
+для запуска через proxy
 
 Скрипт сделает всё сам: прочитает PDF, распараллелит обработку картинок (с защитой от лимитов), сгенерирует текст и соберет файлы `report.qmd` и `presentation.qmd` в папке `data/`.
 
@@ -95,7 +102,7 @@ python clean.py
 Бесплатные модели (например, Gemini) имеют лимит на количество запросов в минуту. Скрипт автоматически ждет и повторяет попытку, если получает ошибку `429`. Обработка 40+ картинок может занять несколько минут, это нормально.
 
 ### Проблемы с VPN на Linux
-Если вы используете VPN (например, INCY) и Python не видит сеть, в `main.py` уже настроена поддержка SOCKS5-прокси. Вам нужно включить «SOCKS5 авторизацию» в VPN-клиенте, скопировать логин/пароль/порт и вписать их в `PROXY_URL` в `config.py`.
+Если вы используете VPN (например, INCY) и Python не видит сеть, в `main_rus.py` уже настроена поддержка SOCKS5-прокси. Вам нужно включить «SOCKS5 авторизацию» в VPN-клиенте, скопировать логин/пароль/порт и вписать их в `API_KEY_PROXY` в `config.py`.
 
 ### Компиляция `.qmd`
 Сам скрипт только генерирует файлы `.qmd`. Чтобы получить из них PDF или PPTX, используйте Quarto (команду `quarto render` или `make`, если у вас настроен Makefile).
